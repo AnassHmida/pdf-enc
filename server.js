@@ -33,7 +33,7 @@ function encrypt(plainText, key, iv) {
   let keyiv = C.PBKDF2(key, iv, { keySize: keyLen + ivLen, iterations: 1000 })
   let key1 = C.lib.WordArray.create(keyiv.words.slice(0, keyLen));
   let iv1 = C.lib.WordArray.create(keyiv.words.slice(keyLen, keyLen + ivLen));
-  plainText = C.enc.Utf8.parse(plainText);
+  plainText = C.enc.Latin1.parse(plainText);
   var aes = C.algo.AES.createEncryptor(key1, {
     mode: C.mode.CBC,
     blocksize: 128,
@@ -158,19 +158,18 @@ function startEncryptionStream() {
 
 function startencrypt() {
 
-  fs.readFile('encryption/data.pdf', {encoding: 'base64'}, function (cErr, data) {
+  fs.readFile('encryption/data.pdf', {encoding: 'binary'}, function (cErr, data) {
     try {
 
       data = encrypt(data, password, salt)
-      fs.writeFile("encryption/data-encrypted.pdf", data, {encoding: 'base64'} , function (err) {
+      fs.writeFile("encryption/data-encrypted.pdf", data, {encoding: 'binary'} , function (err) {
         if (err) {
           return console.log(err)
         } else {
-          fs.readFile('encryption/data-encrypted.pdf', {encoding: 'base64'}, function (cErr, data) {
-
+          fs.readFile('encryption/data-encrypted.pdf', {encoding: 'binary'}, function (cErr, data) {
             try {
               data = decrypt(data, password, salt);
-              fs.writeFile("encryption/data-decrypted.pdf", data,{encoding: 'base64'}, function (err) {
+              fs.writeFile("encryption/data-decrypted.pdf", data,{encoding: 'binary'}, function (err) {
                 if (err) {
                   return console.log(err)
                 }
